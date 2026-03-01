@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Side Media — Visual Storytelling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Archivo:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  :root {
+    --black:  #0a0a08;
+    --bg:     #0d0d0a;
+    --mid:    #141210;
+    --panel:  #1a1814;
+    --white:  #f5f0e8;
+    --amber:  #e8920a;
+    --amber2: #f5a623;
+    --dim:    #7a7060;
+    --border: rgba(232,146,10,0.18);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+  body {
+    background:var(--bg); color:var(--white);
+    font-family:'Archivo',sans-serif; font-weight:300;
+    overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.2rem 1.6rem;
+    background:rgba(10,10,8,0.0);
+    backdrop-filter:blur(0px); -webkit-backdrop-filter:blur(0px);
+    transition:background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
+    border-bottom:1px solid transparent;
+  }
+  nav.scrolled {
+    background:rgba(10,10,8,0.88);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-bottom-color:var(--border);
+  }
+  .logo {
+    font-family:'Cormorant Garamond',serif; font-size:1.2rem;
+    font-weight:300; letter-spacing:0.28em; text-transform:uppercase;
+    color:var(--white); text-decoration:none;
+  }
+  .logo span { color:var(--amber); font-style:italic; }
+  .logo-media {
+    font-size:0.42rem; letter-spacing:0.28em; text-transform:uppercase;
+    color:var(--dim); margin-left:0.55rem; font-family:'Archivo',sans-serif;
+    vertical-align:middle; opacity:0.65;
+  }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a {
+    color:rgba(245,240,232,0.65); text-decoration:none; font-size:0.6rem;
+    letter-spacing:0.18em; text-transform:uppercase;
+    transition:color 0.25s; cursor:pointer; padding:0.4rem 0;
+  }
+  .nav-links a:hover { color:var(--amber); }
+
+  /* ── HERO ── */
+  .hero {
+    height:100svh; display:flex; flex-direction:column;
+    justify-content:center; padding:0 1.6rem;
+    position:relative; overflow:hidden; background:var(--black);
+  }
+  .hero-video-wrap { position:absolute; inset:0; z-index:0; overflow:hidden; }
+  .hero-video-wrap iframe {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:177.78vh; height:100vh;
+    min-width:100%; min-height:56.25vw;
+    pointer-events:none; border:none;
+  }
+  .hero-overlay {
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(to top,rgba(10,10,8,0.97) 0%,rgba(10,10,8,0.52) 40%,rgba(10,10,8,0.15) 100%);
+  }
+  .hero-content { position:relative; z-index:4; max-width:680px; }
+  .hero-label {
+    font-size:0.6rem; letter-spacing:0.38em; text-transform:uppercase;
+    color:var(--amber); margin-bottom:1rem;
+    opacity:0; animation:fadeUp 1s ease 0.3s forwards;
+  }
+  .hero-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(3rem,12vw,8rem);
+    font-weight:300; line-height:0.92; letter-spacing:-0.02em;
+    opacity:0; animation:fadeUp 1s ease 0.5s forwards;
+  }
+  .hero-title em { font-style:italic; color:var(--amber2); }
+  .hero-sub {
+    margin-top:1.6rem; max-width:480px;
+    font-size:0.8rem; line-height:1.95;
+    color:rgba(245,240,232,0.62);
+    opacity:0; animation:fadeUp 1s ease 0.7s forwards;
+  }
+  .hero-cta {
+    margin-top:2.2rem; opacity:0; animation:fadeUp 1s ease 0.9s forwards;
+  }
+  .hero-cta a {
+    display:inline-block; padding:0.9rem 2.2rem;
+    border:1px solid var(--amber); color:var(--amber);
+    text-decoration:none; font-size:0.6rem;
+    letter-spacing:0.22em; text-transform:uppercase;
+    transition:background 0.3s,color 0.3s;
+  }
+  .hero-cta a:hover { background:var(--amber); color:var(--black); }
+  .hero-scroll {
+    position:absolute; bottom:1.8rem; right:1.6rem; z-index:4;
+    display:flex; align-items:center; gap:0.7rem;
+    font-size:0.54rem; letter-spacing:0.3em; text-transform:uppercase;
+    color:var(--dim); opacity:0; animation:fadeIn 1s ease 1.3s forwards;
+  }
+  .hero-scroll::before {
+    content:''; width:26px; height:1px; background:var(--amber);
+    animation:expandLine 1s ease 1.6s forwards;
+    transform-origin:left; transform:scaleX(0);
+  }
+  @keyframes expandLine { to { transform:scaleX(1); } }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn  { to { opacity:1; } }
+
+  .section-label {
+    font-size:0.54rem; letter-spacing:0.34em; text-transform:uppercase;
+    color:var(--amber); margin-bottom:0.5rem; display:block;
+  }
+
+  /* ── PORTFOLIO ── */
+  .work-section { padding:3rem 1.6rem 4rem; background:var(--bg); }
+  .portfolio-header {
+    display:flex; flex-direction:column; gap:0.8rem;
+    margin-bottom:1.8rem;
+  }
+  .portfolio-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.8rem,6vw,3.5rem);
+    font-weight:300; line-height:1;
+  }
+  .portfolio-title em { font-style:italic; color:var(--amber); }
+  .portfolio-desc { font-size:0.74rem; line-height:1.85; color:var(--dim); max-width:360px; }
+
+  .work-grid { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
+  .work-item {
+    position:relative; overflow:hidden;
+    background:var(--panel); cursor:pointer;
+  }
+  .work-item:first-child { grid-column:span 2; position:relative; }
+  .work-thumb {
+    width:100%; aspect-ratio:16/9; object-fit:cover; display:block;
+    transition:transform 0.6s ease,filter 0.6s ease;
+    filter:brightness(0.72) saturate(0.7);
+  }
+  .work-item:hover .work-thumb { transform:scale(1.04); filter:brightness(0.32) saturate(0.4); }
+  .work-play-btn {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%) scale(0.88);
+    width:44px; height:44px;
+    border:1px solid rgba(245,240,232,0.5); border-radius:3px;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0.55; transition:opacity 0.3s,transform 0.3s;
+    backdrop-filter:blur(6px); z-index:2; pointer-events:none;
+  }
+  .work-play-btn::after { content:''; border:5px solid transparent; border-left:9px solid white; margin-left:3px; }
+  .work-item:hover .work-play-btn { opacity:1; transform:translate(-50%,-50%) scale(1.05); }
+  .work-info {
+    position:absolute; bottom:0; left:0; right:0; padding:0.9rem 1rem;
+    background:linear-gradient(to top,rgba(10,10,8,0.94),transparent);
+    transform:translateY(4px); transition:transform 0.4s;
+  }
+  .work-item:hover .work-info { transform:translateY(0); }
+  .work-cat { font-size:0.48rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--amber); margin-bottom:0.18rem; }
+  .work-name { font-family:'Cormorant Garamond',serif; font-size:0.95rem; font-weight:300; color:var(--white); }
+
+  /* MODAL */
+  .modal {
+    display:none; position:fixed; inset:0; z-index:500;
+    background:rgba(0,0,0,0.96); align-items:center; justify-content:center; padding:1rem;
+  }
+  .modal.active { display:flex; }
+  .modal-inner { width:100%; max-width:960px; aspect-ratio:16/9; position:relative; }
+  .modal-inner iframe { width:100%; height:100%; border:none; }
+  .modal-close {
+    position:absolute; top:-2.4rem; right:0;
+    font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase;
+    background:none; border:none; cursor:pointer;
+    color:var(--white); font-family:'Archivo',sans-serif; padding:0.5rem 0; transition:color 0.3s;
+  }
+  .modal-close:hover { color:var(--amber); }
+
+  /* ── WHY ── */
+  .why-section { padding:5rem 1.6rem; background:var(--mid); border-top:1px solid var(--border); }
+  .why-inner { max-width:860px; margin:0 auto; }
+  .why-headline {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.6rem,4.5vw,2.5rem);
+    font-weight:300; line-height:1.25; margin-bottom:3rem;
+  }
+  .why-headline em { font-style:italic; color:var(--amber2); }
+  .why-grid { display:grid; grid-template-columns:1fr; gap:2rem; }
+  .why-card { border-left:1px solid var(--border); padding-left:1.4rem; }
+  .why-card-title {
+    font-family:'Cormorant Garamond',serif; font-size:1.1rem;
+    font-weight:300; color:var(--amber2); margin-bottom:0.55rem;
+  }
+  .why-card p { font-size:0.76rem; line-height:1.85; color:var(--dim); }
+
+  /* ── CONTACT SECTION ── */
+  .contact-section {
+    padding:5rem 1.6rem; background:var(--panel);
+    border-top:1px solid var(--border);
+  }
+  .contact-inner { max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:3rem; }
+  .contact-left { max-width:380px; }
+  .contact-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2.2rem,7vw,4rem);
+    font-weight:300; line-height:1; margin-bottom:1.2rem;
+  }
+  .contact-title em { font-style:italic; color:var(--amber); }
+  .contact-subtitle { font-size:0.78rem; line-height:1.9; color:var(--dim); margin-bottom:1.8rem; }
+  .contact-direct { display:flex; flex-direction:column; gap:0.5rem; }
+  .contact-direct a {
+    font-size:0.76rem; letter-spacing:0.1em; color:var(--dim);
+    text-decoration:none; transition:color 0.3s; padding:0.3rem 0; display:inline-block;
+  }
+  .contact-direct a:hover { color:var(--amber); }
+
+  /* FORM */
+  .contact-form { flex:1; max-width:580px; }
+  .form-grid { display:grid; grid-template-columns:1fr; gap:1.2rem; }
+  .form-field { display:flex; flex-direction:column; gap:0.4rem; }
+  .form-field.full { grid-column:1/-1; }
+  .form-field label { font-size:0.54rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--amber); }
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    background:rgba(232,146,10,0.04); border:1px solid rgba(232,146,10,0.15);
+    color:var(--white); font-family:'Archivo',sans-serif;
+    font-weight:300; font-size:0.86rem; padding:0.8rem 0.95rem;
+    transition:border-color 0.3s,background 0.3s;
+    outline:none; -webkit-appearance:none; appearance:none;
+    border-radius:0; width:100%;
+  }
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus { border-color:var(--amber); background:rgba(232,146,10,0.07); }
+  .form-field input::placeholder,
+  .form-field textarea::placeholder { color:var(--dim); opacity:0.65; }
+  .form-field select {
+    cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7060' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 1rem center;
+    padding-right:2.5rem; background-color:rgba(232,146,10,0.04);
+  }
+  .form-field select option { background:var(--bg); color:var(--white); }
+  .form-field textarea { resize:vertical; min-height:105px; }
+  .form-field input[type="date"] { cursor:pointer; color-scheme:dark; }
+  .form-field input[type="date"]::-webkit-calendar-picker-indicator { filter:invert(0.45); cursor:pointer; }
+
+  .budget-display { font-size:0.88rem; color:var(--amber); margin-top:0.35rem; font-family:'Cormorant Garamond',serif; letter-spacing:0.06em; }
+  .form-field input,
+  .form-field select,
+  .form-field textarea { min-height:46px; }
+  .form-field input[type="range"] {
+    -webkit-appearance:none; appearance:none; width:100%;
+    height:2px; background:rgba(232,146,10,0.25);
+    outline:none; padding:0.8rem 0; border:none;
+    cursor:pointer; min-height:0; border-radius:0;
+  }
+  .form-field input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--amber); cursor:pointer; box-shadow:0 0 0 3px rgba(232,146,10,0.14);
+  }
+  .form-field input[type="range"]::-moz-range-thumb { width:17px; height:17px; border-radius:50%; background:var(--amber); cursor:pointer; border:none; }
+
+  .submit-btn {
+    padding:0.95rem 2.5rem; border:1px solid var(--amber); background:transparent;
+    color:var(--amber); font-family:'Archivo',sans-serif;
+    font-size:0.6rem; font-weight:400; letter-spacing:0.22em; text-transform:uppercase;
+    cursor:pointer; transition:background 0.3s,color 0.3s;
+    min-height:48px; width:100%;
+  }
+  .submit-btn:hover { background:var(--amber); color:var(--black); }
+  .submit-btn:disabled { opacity:0.45; cursor:not-allowed; }
+
+  .form-status {
+    font-size:0.72rem; padding:0.75rem 1rem; margin-top:0.8rem;
+    display:none; line-height:1.6; border-left:2px solid;
+  }
+  .form-status.sending { display:block; color:var(--dim); border-color:var(--border); }
+  .form-status.success { display:block; color:#90c890; border-color:#90c890; }
+  .form-status.error   { display:block; color:var(--amber2); border-color:var(--amber2); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding:1.8rem 1.6rem; background:var(--black);
+    border-top:1px solid var(--border);
+    display:flex; flex-direction:column; gap:0.7rem;
+  }
+  .footer-logo { font-family:'Cormorant Garamond',serif; font-size:0.9rem; font-weight:300; letter-spacing:0.28em; text-transform:uppercase; color:var(--dim); }
+  .footer-logo span { color:var(--amber); font-style:italic; }
+  .footer-row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; }
+  .footer-links { display:flex; gap:2rem; }
+  .footer-links a { font-size:0.58rem; letter-spacing:0.1em; color:var(--dim); text-decoration:none; transition:color 0.3s; }
+  .footer-links a:hover { color:var(--amber); }
+  .footer-copy { font-size:0.56rem; color:var(--dim); opacity:0.6; }
+
+  /* grain */
+  body::after {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:9000; opacity:0.02;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:200px;
+  }
+
+  /* ── DESKTOP ── */
+  @media (min-width:768px) {
+    nav { padding:1.5rem 4rem; }
+    .hero { padding:0 4rem; }
+    /* Portfolio — compact on desktop only */
+    .work-section { padding:1.8rem 4rem 3rem; }
+    .portfolio-title { font-size:1.9rem; }
+    .portfolio-header { flex-direction:row; justify-content:space-between; align-items:flex-end; margin-bottom:1.2rem; }
+    .work-grid { grid-template-columns:repeat(12,1fr); gap:2px; }
+    .work-item:first-child { grid-column:span 7; grid-row:span 2; min-height:260px; }
+    .work-item:first-child .work-thumb { position:absolute; inset:0; width:100%; height:100%; aspect-ratio:unset; }
+    .work-item:nth-child(2) { grid-column:span 5; }
+    .work-item:nth-child(3) { grid-column:span 5; }
+    .work-item:nth-child(4) { grid-column:span 6; }
+    .work-item:nth-child(5) { grid-column:span 6; }
+    .work-item:not(:first-child) .work-thumb { aspect-ratio:16/6; }
+    .work-info { padding:0.8rem 1rem; }
+    .work-name { font-size:1rem; }
+    .work-cat { font-size:0.44rem; }
+    /* Rest of desktop */
+    .why-section { padding:5rem 4rem; }
+    .why-grid { grid-template-columns:1fr 1fr; gap:3rem; }
+    .contact-section { padding:6rem 4rem; }
+    .contact-inner { flex-direction:row; gap:5rem; align-items:flex-start; }
+    .contact-left { position:sticky; top:6rem; flex-shrink:0; }
+    .form-grid { grid-template-columns:1fr 1fr; }
+    .submit-btn { width:auto; }
+    footer { flex-direction:row; justify-content:space-between; align-items:center; padding:2rem 4rem; }
+  }
+  @media (max-width:400px) { .hero-title { font-size:2.6rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a class="logo" href="#">B<span>-</span>Side<span class="logo-media">media</span></a>
+  <ul class="nav-links">
+    <li><a href="#work-anchor">Work</a></li>
+    <li><a href="#why-anchor">About</a></li>
+    <li><a href="#contact-anchor">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-video-wrap">
+    <iframe src="https://www.youtube.com/embed/PJuBColu-pE?autoplay=1&mute=1&loop=1&playlist=PJuBColu-pE&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1&fs=0&cc_load_policy=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-label">Visual Storytelling</p>
+    <h1 class="hero-title">The other<br>side of the<br><em>story.</em></h1>
+    <p class="hero-sub">Cinematic video production with a documentary soul. From travel films to brand stories, I independently create visually rich content for boutiques, restaurants and businesses, designed to captivate audiences and elevate your company.</p>
+    <div class="hero-cta"><a href="#contact-anchor">Start a project</a></div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-inner">
+    <button class="modal-close" id="modalClose">✕ Close</button>
+    <iframe id="modalIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<section class="work-section" id="work-anchor">
+  <div class="portfolio-header">
+    <div>
+      <span class="section-label">Portfolio</span>
+      <h2 class="portfolio-title">My <em>Projects.</em></h2>
+    </div>
+    <p class="portfolio-desc">Brand films, travel stories, and documentary projects — each one a world of its own.</p>
+  </div>
+  <div class="work-grid">
+    <div class="work-item" data-id="ExcOcW2tHig">
+      <img class="work-thumb" src="https://img.youtube.com/vi/ExcOcW2tHig/maxresdefault.jpg" alt="The Healers of Siquijor" loading="lazy">
+      <div class="work-play-btn"></div>
+      <div class="work-info"><p class="work-cat">Documentary</p><p class="work-name">The Healers of Siquijor</p></div>
+    </div>
+    <div class="work-item" data-id="LccyX47SS5E">
+      <img class="work-thumb" src="https://img.youtube.com/vi/LccyX47SS5E/maxresdefault.jpg" alt="Harvest in NSW" loading="lazy">
+      <div class="work-play-btn"></div>
+      <div class="work-info"><p class="work-cat">Brand Film</p><p class="work-name">Harvest in NSW</p></div>
+    </div>
+    <div class="work-item" data-id="uy_e6J7q-uI">
+      <img class="work-thumb" src="https://img.youtube.com/vi/uy_e6J7q-uI/maxresdefault.jpg" alt="Bouldering Project" loading="lazy">
+      <div class="work-play-btn"></div>
+      <div class="work-info"><p class="work-cat">Sport Video</p><p class="work-name">Bouldering Project</p></div>
+    </div>
+    <div class="work-item" data-id="C386UvUQTwY">
+      <img class="work-thumb" src="https://img.youtube.com/vi/C386UvUQTwY/maxresdefault.jpg" alt="Uyuni to Chile" loading="lazy">
+      <div class="work-play-btn"></div>
+      <div class="work-info"><p class="work-cat">Travel Video</p><p class="work-name">Uyuni to Chile</p></div>
+    </div>
+    <div class="work-item" data-id="FrrQx392TTA">
+      <img class="work-thumb" src="https://img.youtube.com/vi/FrrQx392TTA/maxresdefault.jpg" alt="California Sunset" loading="lazy">
+      <div class="work-play-btn"></div>
+      <div class="work-info"><p class="work-cat">Travel Video</p><p class="work-name">California Sunset</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-section" id="why-anchor">
+  <div class="why-inner">
+    <span class="section-label">Why it matters</span>
+    <h2 class="why-headline">In a world of noise,<br><em>a great film cuts through.</em></h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <p class="why-card-title">Emotion drives decisions.</p>
+        <p>Consumers don't buy products — they buy feelings. A well-crafted brand film creates an emotional connection that no static ad or blog post can replicate. It makes people feel something, and that feeling is what builds loyalty.</p>
+      </div>
+      <div class="why-card">
+        <p class="why-card-title">Video builds instant trust.</p>
+        <p>Seeing a real face, a real place, a real story — that's what converts a stranger into a customer. Authentic documentary-style video communicates professionalism and humanity at the same time. People trust what they can see.</p>
+      </div>
+      <div class="why-card">
+        <p class="why-card-title">Your story deserves to be told right.</p>
+        <p>Every brand has a B-Side — the honest, unpolished truth behind the logo. That's the story that resonates. I bring a documentary filmmaker's eye to commercial work: no stock footage, no generic templates, just your reality made cinematic.</p>
+      </div>
+      <div class="why-card">
+        <p class="why-card-title">Stand apart from the scroll.</p>
+        <p>Social feeds are saturated. What stops the thumb is quality — intentional framing, precise editing, a film that feels considered. Brands that invest in high-end video content consistently outperform those that don't, in reach, in retention, and in revenue.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact-anchor">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <span class="section-label">Contact</span>
+      <h2 class="contact-title">Let's <em>talk.</em></h2>
+      <p class="contact-subtitle">Tell me about your project. Brand film, event coverage, creative concept — I'd love to hear your vision.</p>
+      <div class="contact-direct">
+        <a href="tel:+33476380911">04 76 38 09 11</a>
+        <a href="mailto:bside7007@gmail.com">bside7007@gmail.com</a>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <form id="contactForm">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" name="full-name" placeholder="Your name" required autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label for="from_email">Email *</label>
+            <input type="email" id="from_email" name="email" placeholder="your@email.com" required autocomplete="email">
+          </div>
+          <div class="form-field">
+            <label for="companyName">Company</label>
+            <input type="text" id="companyName" name="company-name" placeholder="Your company" autocomplete="organization">
+          </div>
+          <div class="form-field">
+            <label for="companyType">Company Type *</label>
+            <select id="companyType" name="company-type" required>
+              <option value="" disabled selected>Select</option>
+              <option>Agency</option>
+              <option>Startup</option>
+              <option>Restaurant / Café</option>
+              <option>Small / Medium Business</option>
+              <option>Enterprise</option>
+              <option>Non-Profit</option>
+              <option>Freelancer / Independent</option>
+              <option>Public Sector</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="projectType">Project Type *</label>
+            <select id="projectType" name="project-type" required>
+              <option value="" disabled selected>Select</option>
+              <option>Corporate Film</option>
+              <option>Social Media Content</option>
+              <option>Event Coverage</option>
+              <option>Music Video</option>
+              <option>Documentary</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="deadline">Desired Date</label>
+            <input type="date" id="deadline" name="deadline" autocomplete="off">
+          </div>
+          <div class="form-field full">
+            <label>Estimated Budget: <span id="budgetDisplay" style="color:var(--amber);font-family:'Cormorant Garamond',serif;font-size:1rem;">$5,000</span></label>
+            <div class="slider-wrap">
+              <input type="range" id="budgetSlider" min="250" max="20000" step="250" value="5000" oninput="document.getElementById('budgetDisplay').textContent='$'+parseInt(this.value).toLocaleString('en-US')">
+            </div>
+          </div>
+          <div class="form-field full">
+            <label for="projectGoals">Project Goals *</label>
+            <textarea id="projectGoals" name="project-goals" placeholder="What message are you trying to convey?" rows="4" required></textarea>
+          </div>
+          <div class="form-field full">
+            <button type="submit" class="submit-btn" id="submitBtn">Send Inquiry</button>
+            <div class="form-status" id="formStatus"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">B<span>-</span>Side<span class="logo-media">media</span></div>
+  <div class="footer-row">
+    <div class="footer-links">
+      <a href="tel:+33476380911">04 76 38 09 11</a>
+      <a href="mailto:bside7007@gmail.com">bside7007@gmail.com</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 B-Side Media. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  /* Slider thumb styles */
+  .slider-wrap {
+    padding: 0.6rem 0;
+  }
+  .slider-wrap input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 1px !important;
+    min-height: 0 !important;
+    max-height: 1px !important;
+    background: rgba(232,146,10,0.22);
+    outline: none;
+    border: none !important;
+    cursor: pointer;
+    display: block;
+    padding: 0 !important;
+    margin: 0;
+  }
+  #budgetSlider::-webkit-slider-thumb {
+    -webkit-appearance:none; width:14px; height:14px;
+    border-radius:50%; background:#e8920a; cursor:pointer;
+    box-shadow:0 0 0 3px rgba(232,146,10,0.2);
+  }
+  #budgetSlider::-moz-range-thumb {
+    width:14px; height:14px; border-radius:50%;
+    background:#e8920a; cursor:pointer; border:none;
+  }
+</style>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Modal
+  const modal = document.getElementById('modal');
+  const modalIframe = document.getElementById('modalIframe');
+  document.querySelectorAll('.work-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const id = item.dataset.id; if (!id) return;
+      modalIframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  function closeModal() {
+    modal.classList.remove('active');
+    modalIframe.src = '';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Work items reveal
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity=1; e.target.style.transform='translateY(0)'; }
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.work-item').forEach((el, i) => {
+    el.style.opacity = 0; el.style.transform = 'translateY(14px)';
+    el.style.transition = `opacity 0.5s ease ${i*0.07}s, transform 0.5s ease ${i*0.07}s`;
+    revealObs.observe(el);
+    setTimeout(() => { el.style.opacity=1; el.style.transform='translateY(0)'; }, 1200 + i*100);
+  });
+
+  // EmailJS
+  const EMAILJS_SERVICE_ID  = 'service_cbvyq5f';
+  const EMAILJS_TEMPLATE_ID = 'template_wnxqzji';
+  const EMAILJS_PUBLIC_KEY  = 'bip6cymxgJsfypeNI';
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  const form = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const formStatus = document.getElementById('formStatus');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    formStatus.style.display = 'block';
+    formStatus.className = 'form-status sending';
+    formStatus.textContent = 'Sending your inquiry…';
+
+    const templateParams = {
+      from_name:    document.getElementById('fullName').value,
+      from_email:   document.getElementById('from_email').value,
+      company:      document.getElementById('companyName').value || 'N/A',
+      company_type: document.getElementById('companyType').value,
+      project_type: document.getElementById('projectType').value,
+      deadline:     document.getElementById('deadline').value || 'Not specified',
+      budget:       document.getElementById('budgetDisplay').textContent,
+      goals:        document.getElementById('projectGoals').value,
+    };
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+      formStatus.className = 'form-status success';
+      formStatus.textContent = '✓ Inquiry sent! I\'ll get back to you shortly.';
+      form.reset();
+      document.getElementById('budgetDisplay').textContent = '$5,000';
+      document.getElementById('budgetSlider').value = 5000;
+      submitBtn.textContent = 'Sent ✓';
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      formStatus.className = 'form-status error';
+      formStatus.textContent = 'Something went wrong. Email me directly: bside7007@gmail.com';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Try again';
+    }
+  });
+</script>
+</body>
+</html>
