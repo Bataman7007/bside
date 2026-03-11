@@ -158,7 +158,9 @@
   .portfolio-desc { font-size:0.74rem; line-height:1.85; color:var(--dim); max-width:360px; }
 
   .work-grid { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
-  .work-item { position:relative; overflow:hidden; background:var(--panel); cursor:pointer; }
+  .work-item { position:relative; overflow:hidden; background:var(--panel); cursor:pointer; z-index:1; }
+  .work-item * { pointer-events:none; }
+  .work-item { pointer-events:auto; }
 
   /* Mobile order */
   .work-item.short-left  { order:4; grid-column:span 1; grid-row:span 2; }
@@ -190,7 +192,7 @@
     border:1px solid rgba(245,240,232,0.5); border-radius:3px;
     display:flex; align-items:center; justify-content:center;
     opacity:0.75; transition:opacity 0.3s,transform 0.3s;
-    backdrop-filter:blur(6px); z-index:2; pointer-events:auto;
+    backdrop-filter:blur(6px); z-index:2; pointer-events:none;
     cursor:pointer;
   }
   .work-play-btn::after { content:''; border:5px solid transparent; border-left:9px solid white; margin-left:3px; }
@@ -693,7 +695,7 @@
       <p class="contact-subtitle">Tell me about your project. Brand film, event coverage, creative concept — I'd love to hear your vision.</p>
       <div class="contact-direct">
         <a href="tel:+33476380911">04 76 38 09 11</a>
-        <a href="/cdn-cgi/l/email-protection#c5a7b6aca1a0f2f5f5f285a2a8a4aca9eba6aaa8"><span class="__cf_email__" data-cfemail="3250415b56570502020572555f535b5e1c515d5f">[email&#160;protected]</span></a>
+        <a href="mailto:bside7007@gmail.com">bside7007@gmail.com</a>
       </div>
     </div>
 
@@ -769,7 +771,7 @@
   <div class="footer-row">
     <div class="footer-links">
       <a href="tel:+33476380911">04 76 38 09 11</a>
-      <a href="/cdn-cgi/l/email-protection#5331203a37366463636413343e323a3f7d303c3e"><span class="__cf_email__" data-cfemail="3456475d505103040403745359555d581a575b59">[email&#160;protected]</span></a>
+      <a href="mailto:bside7007@gmail.com">bside7007@gmail.com</a>
     </div>
     <p class="footer-copy">&copy; 2026 B-Side Media. All rights reserved.</p>
   </div>
