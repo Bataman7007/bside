@@ -766,7 +766,7 @@
       <p class="contact-subtitle">Tell me about your project. Brand film, event coverage, creative concept — I'd love to hear your vision.</p>
       <div class="contact-direct">
         <a href="tel:+33476380911">04 76 38 09 11</a>
-        <a href="mailto:bside7007@gmail.com">bside7007@gmail.com</a>
+        <a href="/cdn-cgi/l/email-protection#6002130904055750505720070d01090c4e030f0d"><span class="__cf_email__" data-cfemail="90f2e3f9f4f5a7a0a0a7d0f7fdf1f9fcbef3fffd">[email&#160;protected]</span></a>
       </div>
     </div>
 
@@ -879,7 +879,7 @@
   }
 </style>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Nav scroll
   const nav = document.getElementById('mainNav');
   window.addEventListener('scroll', () => {
@@ -910,11 +910,44 @@
   const EMAILJS_PUBLIC_KEY  = 'bip6cymxgJsfypeNI';
   emailjs.init(EMAILJS_PUBLIC_KEY);
 
-  const form = document.getElementById('contactForm');
-  const submitBtn = document.getElementById('submitBtn');
+  const form       = document.getElementById('contactForm');
+  const submitBtn  = document.getElementById('submitBtn');
   const formStatus = document.getElementById('formStatus');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     submitBtn.disabled = true;
-    submitBtn.tex
+    submitBtn.textContent = 'Sending…';
+    formStatus.style.display = 'block';
+    formStatus.className = 'form-status sending';
+    formStatus.textContent = 'Sending your inquiry…';
+
+    const templateParams = {
+      from_name:    document.getElementById('fullName').value,
+      from_email:   document.getElementById('from_email').value,
+      company:      document.getElementById('companyName').value,
+      company_type: document.getElementById('companyType').value,
+      project_type: document.getElementById('projectType').value,
+      deadline:     document.getElementById('deadline').value,
+      budget:       document.getElementById('budgetSlider').value,
+      message:      document.getElementById('projectGoals').value,
+    };
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+      formStatus.className = 'form-status success';
+      formStatus.textContent = "✓ Message sent! I'll get back to you soon.";
+      form.reset();
+      document.getElementById('budgetDisplay').textContent = '$5,000';
+    } catch (err) {
+      formStatus.className = 'form-status error';
+      formStatus.textContent = 'Something went wrong. Please try again or email me directly.';
+      console.error('EmailJS error:', err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Inquiry';
+    }
+  });
+</script>
+</body>
+</html>
