@@ -766,7 +766,7 @@
       <p class="contact-subtitle">Tell me about your project. Brand film, event coverage, creative concept — I'd love to hear your vision.</p>
       <div class="contact-direct">
         <a href="tel:+33476380911">04 76 38 09 11</a>
-        <a href="mailto:bside7007@gmail.com">bside7007@gmail.com</a>
+        <a href="/cdn-cgi/l/email-protection#7d1f0e1419184a4d4d4a3d1a101c1411531e1210"><span class="__cf_email__" data-cfemail="1f7d6c767b7a282f2f285f78727e7673317c7072">[email&#160;protected]</span></a>
       </div>
     </div>
 
@@ -842,7 +842,7 @@
   <div class="footer-row">
     <div class="footer-links">
       <a href="tel:+33476380911">04 76 38 09 11</a>
-      <a href="mailto:bside7007@gmail.com">bside7007@gmail.com</a>
+      <a href="/cdn-cgi/l/email-protection#d2b0a1bbb6b7e5e2e2e592b5bfb3bbbefcb1bdbf"><span class="__cf_email__" data-cfemail="b2d0c1dbd6d785828285f2d5dfd3dbde9cd1dddf">[email&#160;protected]</span></a>
     </div>
     <p class="footer-copy">&copy; 2026 B-Side Media. All rights reserved.</p>
   </div>
@@ -879,7 +879,7 @@
   }
 </style>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Nav scroll
   const nav = document.getElementById('mainNav');
   window.addEventListener('scroll', () => {
@@ -938,4 +938,16 @@
       formStatus.className = 'form-status success';
       formStatus.textContent = "✓ Message sent! I'll get back to you soon.";
       form.reset();
-      document.getElementById('budg
+      document.getElementById('budgetDisplay').textContent = '$5,000';
+    } catch (err) {
+      formStatus.className = 'form-status error';
+      formStatus.textContent = 'Something went wrong. Please try again or email me directly.';
+      console.error('EmailJS error:', err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Inquiry';
+    }
+  });
+</script>
+</body>
+</html>
